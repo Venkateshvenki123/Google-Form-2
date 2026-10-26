@@ -250,3 +250,8 @@ Output:
 2. In your backend environment, set:
    `DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres`
 3. Deploy frontend to Vercel pointing API proxy to your deployed backend.
+
+### Deployment Option 3: Netlify frontend + hosted backend
+1. Set the Netlify base directory to `client`, build command to `npm run build`, and publish directory to `dist`.
+2. Deploy the Express backend separately and configure its database and production secrets.
+3. Add the Netlify environment variable `VITE_API_URL` with the backend API base URL, including `/api` (for example, `https://your-backend.onrender.com/api`), then redeploy the frontend.

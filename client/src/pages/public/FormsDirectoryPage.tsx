@@ -15,14 +15,19 @@ export const FormsDirectoryPage: React.FC = () => {
   const [forms, setForms] = useState<Form[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadPublicForms = async () => {
       try {
         const res = await api.getPublicForms();
+        if (!Array.isArray(res.forms)) {
+          throw new Error('The API returned an invalid forms response. Check that VITE_API_URL points to your backend API.');
+        }
         setForms(res.forms);
       } catch (err) {
         console.error('Failed to load public forms:', err);
+        setLoadError(err instanceof Error ? err.message : 'Unable to load forms. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -71,6 +76,11 @@ export const FormsDirectoryPage: React.FC = () => {
           <CardSkeleton />
           <CardSkeleton />
           <CardSkeleton />
+        </div>
+      ) : loadError ? (
+        <div role="alert" className="text-center py-16 bg-white rounded-3xl border border-red-200 shadow-sm p-8 space-y-3">
+          <h3 className="text-base font-bold text-gray-800">Unable to Load Forms</h3>
+          <p className="text-sm text-gray-500">{loadError}</p>
         </div>
       ) : filteredForms.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-3xl border border-gray-200/80 shadow-sm p-8 space-y-3">

@@ -7,12 +7,6 @@
 
 # SPA routing: Redirect all page requests to index.html with 200 status
 [[redirects]]
-  from = "/api/*"
-  to = ":splat"
-  status = 200
-  force = false
-
-[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

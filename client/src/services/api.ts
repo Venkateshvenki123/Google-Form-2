@@ -1,6 +1,6 @@
 import { Form, FormResponse, DashboardStats, AdminUser } from '../types/form';
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/+$/, '');
 
 function getAuthHeader(): Record<string, string> {
   const token = localStorage.getItem('formcraft_token');
@@ -17,7 +17,12 @@ async function handleResponse<T>(res: Response): Promise<T> {
     }
   }
 
-  const data = await res.json().catch(() => ({}));
+  let data: any;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error('The API returned a non-JSON response. Check that VITE_API_URL points to your backend API.');
+  }
 
   if (!res.ok) {
     const errorMsg = data.error || (data.validationErrors ? data.validationErrors.map((e: any) => e.message).join(' ') : 'An unexpected error occurred.');
